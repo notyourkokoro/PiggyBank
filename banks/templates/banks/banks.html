@@ -1,0 +1,162 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            {% if messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+                </div>
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            {{ error }}
+                        {% endfor %}
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+                </div>
+            {% endif %}
+
+             <div class="card shadow-lg" style="border-radius: 15px;">
+                <div class="card-body p-5">
+                    <h1 class="mb-3">Ваши копилки</h1>
+                    {% if user.banks.all %}
+
+                        {% for bank in user.banks.all %}
+
+                            <div class="card mb-5">
+
+                            {% if user.id == bank.owner_id %}
+                                <div class="card-header bg-success-subtle">
+                                    Ваша копилка
+                                </div>
+                            {% else %}
+                                <div class="card-header bg-dark-subtle">
+                                    Копилка Вашего друга
+                                </div>
+                            {% endif %}
+
+                                <div class="card-body shadow-lg">
+                                    <h5 class="card-title">{{ bank.name }}</h5>
+                                    <p class="card-text">
+                                        {% if bank.description %}
+                                            {{ bank.description }}
+                                        {% else %}
+                                            У этой копилки нет описания
+                                        {% endif %}
+                                    </p>
+
+                                    <div class="progress m-lg-3">
+                                        <div class="progress-bar bg-dark" role="progressbar" style="width: {{ bank.percent }}%;" aria-valuenow="{{ bank.percent }}" aria-valuemin="0" aria-valuemax="100">{{ bank.percent }}%</div>
+                                    </div>
+
+                                    <div class="float-end">
+                                        {% if user.id == bank.owner_id %}
+                                            <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#DelModal-{{ bank.id }}">Удалить</a>
+                                            <a href="{% url "banks:edit_bank" bank.id %}" class="btn btn-outline-dark">Редактировать копилку</a>
+
+                                            <div class="modal fade" id="DelModal-{{ bank.id }}" tabindex="-1" aria-labelledby="DelModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить копилку?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <form action="{% url "banks:delete_bank" bank.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <div class="float-end">
+                                                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Закрыть</button>
+                                                            <input type="submit" class="btn btn-danger" value="Удалить">
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                        {% else %}
+
+                                            <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#ExitModal-{{ bank.id }}">Покинуть</a>
+
+                                            <div class="modal fade" id="ExitModal-{{ bank.id }}" tabindex="-1" aria-labelledby="ExitModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите расстроить друга и покинуть копилку?</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <form action="{% url "banks:exit_bank" bank.id %}" method="post">
+                                                                {% csrf_token %}
+                                                                <div class="float-end">
+                                                                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Закрыть</button>
+                                                                    <input type="submit" class="btn btn-danger" value="Покинуть">
+                                                                </div>
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        {% endif %}
+
+                                        <!-- Кнопка для пополнения копилки -->
+                                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ bank.id }}">
+                                            Пополнить
+                                        </button>
+                                    </div>
+
+                                    <!-- Модальное окно -->
+                                    <div class="modal fade" id="exampleModal-{{ bank.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Добавить денег!</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <form action="{% url "banks:banks" %}" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="bank_id" value="{{ bank.id }}">
+                                                        {{ form.money }}
+                                                        <label class="form-label" for="{{ form.money.id_for_label }}" style="margin-left: 0px;">Сумма пополнения</label>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Закрыть</button>
+                                                            <input type="submit" class="btn btn-dark" value="Пополнить">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    {% else %}
+                    У Вас пока что нет ни одной копилки, но Вы можете это <a href="{% url "banks:create_bank" %}">исправить</a>
+                    {% endif %}
+
+                </div>
+             </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

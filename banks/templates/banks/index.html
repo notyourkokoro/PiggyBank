@@ -1,0 +1,62 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+            <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+                <h1 class="display-4 fw-bold lh-1">Ставьте цель и стремись к ней! Осталось ещё...</h1>
+                <p class="lead">Создавайте копилки для себя или копите вместе с друзьями. Возможностей море, а целей ещё больше! Стремитесь, и мы поможем Вам и Вашим друзьям в этом!</p>
+
+                {% if user.is_authenticated %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+                        <a href="{% url "banks:banks" %}" class="btn btn-outline-primary btn-lg px-4 me-md-2 fw-bold">К копилкам</a>
+                    </div>
+                {% else %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+                        <a href="{% url "users:registration" %}" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold">Присоединиться</a>
+                        <a href="{% url "users:logout" %}" class="btn btn-outline-dark btn-lg px-4">Уже с нами</a>
+                    </div>
+                {% endif %}
+
+            </div>
+            <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+                <img class="rounded-lg-3" src="{% static "PiggyBank/img/sand.jpg" %}" alt="sand" width="520" height="560" style="border-top-left-radius: 10px">
+            </div>
+        </div>
+
+        <div class="container px-4 py-5" id="hanging-icons">
+            <h2 class="pb-2 border-bottom">Что мы можем</h2>
+            <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+                <div class="col d-flex align-items-start">
+                    <div class="icon-square text-body-emphasis d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                        <img src="{% static "PiggyBank/img/pin-angle-fill.svg" %}" alt="always">
+                    </div>
+                    <div>
+                        <h3 class="fs-2 text-body-emphasis">Всегда есть цель</h3>
+                        <p>Поставьте себе цель, а мы поможем с тем, как не потерять ее из виду. Вы всегда сможете посмотреть свой прогресс в разделе "Копилки"</p>
+                    </div>
+                </div>
+
+                <div class="col d-flex align-items-start">
+                    <div class="icon-square text-body-emphasis d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                        <img src="{% static "PiggyBank/img/palette-fill.svg" %}" alt="paint">
+                    </div>
+                    <div>
+                        <h3 class="fs-2 text-body-emphasis">Кастомизацируйте!</h3>
+                        <p>Ничего не будет серым и скучным. Выбор цвета и друзей - хорошее начало для достижения своей цели</p>
+                    </div>
+                </div>
+                <div class="col d-flex align-items-start">
+                    <div class="icon-square text-body-emphasis d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                        <img src="{% static "PiggyBank/img/calendar-plus.svg" %}" alt="paint">
+                    </div>
+                    <div>
+                        <h3 class="fs-2 text-body-emphasis">Делитесь копилкой</h3>
+                        <p>Вы всегда можете попросить присоединиться друзей к копилке, чтобы быстрее завершить сбор! Всё становится не только в Ваших руках!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

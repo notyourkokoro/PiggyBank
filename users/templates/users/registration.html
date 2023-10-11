@@ -1,0 +1,64 @@
+{% extends 'users/base.html' %}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-9 col-lg-7 col-xl-7">
+
+                    {% if form.errors %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+                        </div>
+                    {% endif %}
+
+                    <div class="card shadow-lg" style="border-radius: 15px;">
+                        <div class="card-body p-5">
+                            <h1 class="text-center mb-5">Пару шагов и...</h1>
+
+                            <form action="{% url "users:registration" %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-outline mb-4">
+                                    {{ form.username }}
+                                    <label class="form-label" for="{{ form.username.id_for_label }}" style="margin-left: 0px;">Имя пользователя</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 71.2px;"></div><div class="form-notch-trailing"></div></div>
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    {{ form.email }}
+                                    <label class="form-label" for="{{ form.email.id_for_label }}" style="margin-left: 0px;">Email</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 68.8px;"></div><div class="form-notch-trailing"></div></div>
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    {{ form.password1 }}
+                                    <label class="form-label" for="{{ form.password1.id_for_label }}" style="margin-left: 0px;">Пароль</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div>
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    {{ form.password2 }}
+                                    <label class="form-label" for="{{ form.password2.id_for_label }}" style="margin-left: 0px;">Повторите пароль</label>
+                                    <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 134.4px;"></div><div class="form-notch-trailing"></div></div>
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <input class="btn btn-outline-dark btn-lg col-md-7" type="submit" value="Вы с нами!">
+                                </div>
+
+                                <p class="text-center text-muted mt-5 mb-0">У Вас уже есть аккаунт? <a href="{% url "users:login" %}" class="fw-bold text-body"><u>Авторизоваться</u></a></p>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
